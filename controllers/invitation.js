@@ -68,7 +68,8 @@ const myInvitations = async (req, res) => {
 
     const [total, invitations] = await Promise.all([
         Invitation.countDocuments(query),
-        Invitation.find(query).populate('user')
+        Invitation.find(query).sort('-createdAt')
+                              .populate('user')
                               .populate('event', 'title description visibility status')
                               .skip(Number(from))
                               .limit(Number(limit))
