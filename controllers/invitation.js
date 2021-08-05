@@ -64,7 +64,7 @@ const myInvitations = async (req, res) => {
     const { from = 0, limit = 10 } = req.query;
     const user = req.user._id;
 
-    const query = {status: true, user: user};
+    const query = {status: true, user: user, statusInvitation: 0};
 
     const [total, invitations] = await Promise.all([
         Invitation.countDocuments(query),

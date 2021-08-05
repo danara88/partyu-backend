@@ -1,5 +1,6 @@
 const Event = require('../models/event');
 const Participant = require('../models/participant');
+const Invitation = require('../models/invitation');
 const moment = require('moment');
 
 const createEvent = async (req, res) => {
@@ -85,8 +86,23 @@ const updateEvent = async (req, res) => {
 const deleteEvent = async (req, res) => {
     const { id } = req.params;
     
+    const invitationsDB = await Invitation.find({ event: id });
+
+    if (invitationsDB.length > 0) {
+        invitationsDB.forEach(async ({_id: id}) => {
+            try {
+                await Invitation.findByIdAndUpdate(id, {status: false});
+            } catch (err) {
+                console.log(err);
+                return res.status(500).json({ message: 'Something went wrong ...' });
+            }
+        });
+    }
+
     const event = await Event.findByIdAndUpdate(id, {status: false}, {new: true}).populate('region', 'city');
     res.json(event);
+
+    
 }
 
 module.exports = {

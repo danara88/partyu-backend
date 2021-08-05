@@ -18,7 +18,7 @@ const InvitationSchema = Schema({
     },
     statusInvitation: {
         type: Number,
-        default: 0 // 0 ->pendient 1 -> rejected 2 -> accepted
+        default: 0 // 0 -> pendient 1 -> rejected 2 -> accepted
     },
     status: {
         type: Boolean,
