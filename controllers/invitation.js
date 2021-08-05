@@ -61,10 +61,15 @@ const getInvitations = async (req, res) => {
 }
 
 const myInvitations = async (req, res) => {
-    const { from = 0, limit = 10 } = req.query;
+    const { from = 0, limit = 10, all = 0 } = req.query;
     const user = req.user._id;
 
-    const query = {status: true, user: user, statusInvitation: 0};
+    let query;
+    if (Number(all) === 1) { // 1 -> All, 0 -> Not All Just pending notifications
+        query = {status: true, user: user, statusInvitation: {$ne: 0}};
+    } else if(Number(all) === 0){
+        query = {status: true, user: user, statusInvitation: 0};
+    }
 
     const [total, invitations] = await Promise.all([
         Invitation.countDocuments(query),
