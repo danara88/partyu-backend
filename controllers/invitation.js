@@ -75,7 +75,7 @@ const myInvitations = async (req, res) => {
         Invitation.countDocuments(query),
         Invitation.find(query).sort('-createdAt')
                               .populate('user')
-                              .populate('event', 'title description visibility status')
+                              .populate('event', 'title description visibility status eventStart eventEnd')
                               .skip(Number(from))
                               .limit(Number(limit))
     ]);
