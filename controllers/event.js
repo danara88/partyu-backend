@@ -4,8 +4,8 @@ const Invitation = require('../models/invitation');
 const moment = require('moment');
 
 const createEvent = async (req, res) => {
-    const { title, description, region, visibility } = req.body;
-    const event = new Event({ title, description, region, visibility });
+    const { title, description, region, visibility, eventStart, eventEnd } = req.body;
+    const event = new Event({ title, description, region, visibility, eventStart, eventEnd });
 
     await event.save();
     res.json(event);
