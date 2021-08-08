@@ -4,7 +4,7 @@ const api = Router();
 
 const Event = require('../models/event');
 const Region = require('../models/region');
-const { createEvent, getEvents, getEvent, updateEvent, deleteEvent, getEventsByRegion, getMyEventsParticipation } = require('../controllers');
+const { createEvent, getEvents, getEvent, updateEvent, deleteEvent, getEventsByRegion, getMyEventsParticipation, getMyEventsCalendar } = require('../controllers');
 const { existsDataId } = require('../helpers');
 const { validateJWT, isAdminUser, validateFields } = require('../middlewares');
 
@@ -33,6 +33,10 @@ api.get('/events-region/:regionID', [
 api.get('/my-events-participations', [
     validateJWT
 ], getMyEventsParticipation);
+
+api.get('/my-events-calendar', [
+    validateJWT
+], getMyEventsCalendar);
 
 api.get('/:id', [
     validateJWT,

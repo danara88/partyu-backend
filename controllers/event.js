@@ -67,6 +67,30 @@ const getMyEventsParticipation = async (req, res) => {
     res.json(myParticipations);
 }
 
+const getMyEventsCalendar = async (req, res) => {
+    const { _id: uid } = req.user;
+    const query = { user: uid, status: true };
+
+    const myParticipations = await Participant.find(query)
+    .populate({
+        path: 'event',
+        populate: {
+            path: 'region',
+            model: 'Region'
+        }
+    });
+    let eventsParticipation = myParticipations.map(participation => participation.event);
+    let eventsFilter = eventsParticipation.filter(event => event.status);
+    let eventsCalendar = eventsFilter.map(event => ({ 
+        _id: event._id, 
+        title: event.title, 
+        start: event.eventStart, 
+        end: event.eventEnd 
+    }));
+    
+    res.json(eventsCalendar);
+}
+
 const getEvent = async (req, res) => {
     const { id } = req.params;
     const event = await Event.findById(id).populate('region', 'city');
@@ -109,6 +133,7 @@ module.exports = {
     createEvent,
     getEvents,
     getEventsByRegion,
+    getMyEventsCalendar,
     getMyEventsParticipation,
     getEvent,
     updateEvent,
