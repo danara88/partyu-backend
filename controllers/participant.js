@@ -22,12 +22,6 @@ notAttendToEvent = async (req, res) => {
     const { event } = req.body;
 
     const participantDB = await Participant.findOne({ event });
-   
-    if (participantDB.user.toString() != req.user._id.toString()) {
-        return res.status(403).json({
-            message: 'You are not allowed to access here'
-        });
-    }
 
     const participant = await Participant.findByIdAndUpdate(participantDB._id, {status: false}, {new: true});
     res.json(participant);
