@@ -43,28 +43,38 @@ const getEventsByRegion = async (req, res) => {
     });
 }
 
-const getMyEventsParticipation = async (req, res) => {
+const getMyPublicEvents = async (req, res) => {
     const { _id: uid } = req.user;
-    const { eventsformat = false } = req.query;
-    
-    const query = { user: uid, status: true };
-    const myParticipations = await Participant.find(query);
+    const query = { status: true, user: uid };
 
-    if (eventsformat) {
-        const myParticipations = await Participant.find(query)
-                                                  .populate({
-                                                      path: 'event',
-                                                      populate: {
-                                                          path: 'region',
-                                                          model: 'Region'
-                                                      }
-                                                  });
-        let events = myParticipations.map(participation => participation.event);
-        let eventsFilter = events.filter(event => event.status);
-        return res.json(eventsFilter);
-    }
+    const participations = await Participant.find(query)
+                                                .populate({
+                                                    path: 'event',
+                                                    populate: {
+                                                        path: 'region',
+                                                        model: 'Region'
+                                                    }
+                                                });
+    let events = participations.map(participation => participation.event);
+    let eventsFilter = events.filter(event => (event.status && event.visibility === 0));
 
-    res.json(myParticipations);
+    return res.json(eventsFilter);
+}
+
+const getMyPrivateEvents = async (req, res) => {
+    const { _id: uid } = req.user;
+    const query = {status: true, user: uid, statusInvitation: 2};
+
+    const invitationsDB = await Invitation.find(query)
+                                           .populate({
+                                               path: 'event',
+                                               populate: {
+                                                   path: 'region',
+                                                   model: 'Region'}});
+    let events = invitationsDB.map(invitation => invitation.event);
+    let eventsFilter = events.filter(event => (event.status && event.visibility === 1));
+
+    res.json(eventsFilter);        
 }
 
 const getMyEventsCalendar = async (req, res) => {
@@ -134,7 +144,8 @@ module.exports = {
     getEvents,
     getEventsByRegion,
     getMyEventsCalendar,
-    getMyEventsParticipation,
+    getMyPublicEvents,
+    getMyPrivateEvents,
     getEvent,
     updateEvent,
     deleteEvent

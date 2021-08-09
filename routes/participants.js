@@ -4,7 +4,7 @@ const api = Router();
 
 const Participant = require('../models/participant');
 const Event = require('../models/event');
-const { attendToEvent, notAttendToEvent, listParticipants } = require('../controllers');
+const { attendToEvent, notAttendToEvent, listParticipants, getMyParticipations } = require('../controllers');
 const { existsDataId } = require('../helpers');
 const { validateJWT, validateFields } = require('../middlewares');
 
@@ -23,6 +23,10 @@ api.get('/:eventID', [
     check('eventID').custom(eventID => existsDataId(Event, eventID)),
     validateFields
 ], listParticipants);
+
+api.get('/my-participations/list', [
+    validateJWT,
+], getMyParticipations);
 
 api.post('/not-attend', [
     validateJWT,

@@ -1,4 +1,5 @@
 const Invitation = require('../models/invitation');
+const Participation = require('../models/participant');
 
 const sendInvitation = async (req, res) => {
     const { updatedAt, createdAt, status, _id, statusInvitation, ...body } = req.body;
@@ -36,7 +37,17 @@ const acceptInvitation = async (req, res) => {
         });
     }
 
+    // Update invitation (Accept Invitation)
     const invitation = await Invitation.findByIdAndUpdate(invitationID, {statusInvitation: 2}, {new: true});
+
+    // Add User to a participation event
+    let participationData = {
+        event: invitation.event,
+        user: req.user._id
+    }
+    const participation = new Participation(participationData);
+    await participation.save();
+
     res.json(invitation);
 }
 
@@ -66,8 +77,10 @@ const myInvitations = async (req, res) => {
 
     let query;
     if (Number(all) === 1) { // 1 -> All, 0 -> Not All Just pending notifications
+        // All except pending documentations
         query = {status: true, user: user, statusInvitation: {$ne: 0}};
     } else if(Number(all) === 0){
+        // Pending Notifications
         query = {status: true, user: user, statusInvitation: 0};
     }
 
@@ -100,5 +113,5 @@ module.exports = {
     acceptInvitation,
     getInvitations,
     deleteInvitation,
-    myInvitations
+    myInvitations,
 }

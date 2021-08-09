@@ -5,7 +5,12 @@ const api = Router();
 const Event = require('../models/event');
 const User = require('../models/user');
 const Invitation = require('../models/invitation');
-const { sendInvitation, acceptInvitation, rejectInvitation, getInvitations, myInvitations, deleteInvitation } = require('../controllers/invitation');
+const { sendInvitation, 
+        acceptInvitation, 
+        rejectInvitation, 
+        getInvitations, 
+        myInvitations, 
+        deleteInvitation} = require('../controllers/invitation');
 const { existsDataId } = require('../helpers');
 const { validateJWT, isAdminUser, validateFields } = require('../middlewares');
 

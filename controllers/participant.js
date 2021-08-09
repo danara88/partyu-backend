@@ -1,6 +1,6 @@
 const Participant = require('../models/participant');
 
-attendToEvent = async (req, res) => {
+const attendToEvent = async (req, res) => {
     const { event } = req.body;
     const user = req.user._id;
 
@@ -18,7 +18,7 @@ attendToEvent = async (req, res) => {
     return res.json(participant);
 }
 
-notAttendToEvent = async (req, res) => {
+const notAttendToEvent = async (req, res) => {
     const { event } = req.body;
 
     const participantDB = await Participant.findOne({ event });
@@ -27,7 +27,7 @@ notAttendToEvent = async (req, res) => {
     res.json(participant);
 }
 
-listParticipants = async (req, res) => {
+const listParticipants = async (req, res) => {
     const { eventID } = req.params;
     const query = { status: true, event: eventID };
 
@@ -44,9 +44,19 @@ listParticipants = async (req, res) => {
     });
 }
 
+const getMyParticipations = async (req, res) => {
+    const { _id: uid } = req.user;
+
+    const query = { user: uid, status: true };
+    const participations = await Participant.find(query);
+
+    res.json(participations);
+}
+
 
 module.exports = {
     attendToEvent,
     notAttendToEvent,
-    listParticipants
+    listParticipants,
+    getMyParticipations,
 }
