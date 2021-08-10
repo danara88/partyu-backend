@@ -139,6 +139,21 @@ const deleteEvent = async (req, res) => {
     
 }
 
+const filterEvents = async (req, res) => {
+    const { eventStart = null, region = null } = req.body;
+    let filter = {};
+
+    if (eventStart !== null) filter.eventStart = eventStart;
+    if (region !== null) filter.region = region;
+
+    filter.status = true;
+    filter.visibility = 0;
+    const events = await Event.find(filter)
+                              .populate('region', 'city');
+    
+    res.json(events);
+}
+
 module.exports = {
     createEvent,
     getEvents,
@@ -148,5 +163,6 @@ module.exports = {
     getMyPrivateEvents,
     getEvent,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    filterEvents
 }

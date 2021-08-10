@@ -6,7 +6,8 @@ const Event = require('../models/event');
 const Region = require('../models/region');
 const { createEvent, getEvents, getEvent, updateEvent, deleteEvent, 
         getEventsByRegion, getMyPublicEvents, getMyEventsCalendar, 
-        getMyPrivateEvents } = require('../controllers');
+        getMyPrivateEvents, 
+        filterEvents} = require('../controllers');
 const { existsDataId } = require('../helpers');
 const { validateJWT, isAdminUser, validateFields } = require('../middlewares');
 
@@ -66,5 +67,9 @@ api.delete('/:id', [
     check('id').custom(id => existsDataId(Event, id)),
     validateFields
 ], deleteEvent);
+
+api.post('/filter', [
+    validateJWT
+], filterEvents);
 
 module.exports = api;
