@@ -18,6 +18,18 @@ const login = async (req, res) => {
     res.json({ token });
 }
 
+const renewToken = async (req, res) => {
+    const { _id: uid } = req.user;
+    
+    const token = await generateJWT(uid);
+
+    res.json({
+        ok: true,
+        token
+    })
+}
+
 module.exports = {
     login,
+    renewToken
 }
