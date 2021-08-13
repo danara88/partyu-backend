@@ -10,6 +10,7 @@ class Server {
         this.paths = {
             user: '/api/users',
             auth: '/api/auth',
+            search: '/api/search',
             region: '/api/regions',
             event: '/api/events',
             participant: '/api/participants',
@@ -33,6 +34,7 @@ class Server {
     routes() {
         this.app.use(this.paths.user, require('../routes/user'));
         this.app.use(this.paths.auth, require('../routes/auth'));
+        this.app.use(this.paths.search, require('../routes/search'));
         this.app.use(this.paths.region, require('../routes/region'));
         this.app.use(this.paths.event, require('../routes/event'));
         this.app.use(this.paths.participant, require('../routes/participants'));
