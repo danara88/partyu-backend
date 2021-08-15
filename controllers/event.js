@@ -63,15 +63,20 @@ const getMyPublicEvents = async (req, res) => {
 
 const getMyPrivateEvents = async (req, res) => {
     const { _id: uid } = req.user;
-    const query = {status: true, user: uid, statusInvitation: 2};
+    const query = {status: true, user: uid};
 
-    const invitationsDB = await Invitation.find(query)
-                                           .populate({
-                                               path: 'event',
-                                               populate: {
-                                                   path: 'region',
-                                                   model: 'Region'}});
-    let events = invitationsDB.map(invitation => invitation.event);
+    const participations = await Participant.find(query)
+                                            .populate('invitation')
+                                            .populate({
+                                                path: 'event',
+                                                populate: {
+                                                    path: 'region',
+                                                    model: 'Region'
+                                                }
+                                            });
+
+    let participationsFilter = participations.filter(participation => (participation.invitation !== null && participation.invitation.statusInvitation === 2));
+    let events = participationsFilter.map(participation => participation.event);
     let eventsFilter = events.filter(event => (event.status && event.visibility === 1));
 
     res.json(eventsFilter);        

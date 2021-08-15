@@ -23,6 +23,7 @@ const rejectInvitation = async (req, res) => {
         });
     }
 
+    // Reject invitation
     const invitation = await Invitation.findByIdAndUpdate(invitationID, {statusInvitation: 1}, {new: true});
     res.json(invitation);
 }
@@ -43,7 +44,8 @@ const acceptInvitation = async (req, res) => {
     // Add User to a participation event
     let participationData = {
         event: invitation.event,
-        user: req.user._id
+        user: req.user._id,
+        invitation: invitation._id
     }
     const participation = new Participation(participationData);
     await participation.save();

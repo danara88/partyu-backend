@@ -20,8 +20,9 @@ const attendToEvent = async (req, res) => {
 
 const notAttendToEvent = async (req, res) => {
     const { event } = req.body;
+    const { _id: uid } = req.user;
 
-    const participantDB = await Participant.findOne({ event });
+    const participantDB = await Participant.findOne({ event, user: uid});
 
     const participant = await Participant.findByIdAndUpdate(participantDB._id, {status: false}, {new: true});
     res.json(participant);

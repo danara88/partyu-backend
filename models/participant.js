@@ -12,6 +12,11 @@ const ParticipantSchema = Schema({
         ref: 'Event',
         required: [true, 'The event is required']
     },
+    invitation: {
+        type: Schema.Types.ObjectId,
+        ref: 'Invitation',
+        default: null
+    },
     status: {
         type: Boolean,
         default: true
